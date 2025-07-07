@@ -41,20 +41,31 @@ ABBREVIATIONS = {
     "dept": "department",
     "dept.": "department",
     "cuab": "crescent university",
-    "coe": "college of education",
-    "cs": "computer science",
-    "ict": "information and communication technology"
+    "ict": "information and communication technology",
+    "cohes": "college of health sciences",
+    "coes": "college of environmental sciences",
+    "conas": "college of natural and applied sciences",
+    "casmas": "college of arts social and management sciences",
+    "cicot": "college of information and communication technology",
+    "bacolaw": "bola ajibola college of law"
 }
 
 SYNONYMS = {
     "school fees": "tuition",
+    "fees": "tuition",
     "accommodation": "hostel",
-    "hostel fee": "accommodation fee",
-    "registration": "enrollment",
-    "courses": "subjects",
+    "freshers": "new students",
+    "returning students": "old students",
     "lecturers": "academic staff",
     "teachers": "lecturers",
-    "head of department": "hod"
+    "professors": "academic staff",
+    "registration": "enrollment",
+    "course list": "courses",
+    "head of department": "hod",
+    "contact": "phone number",
+    "cost": "price",
+    "amount": "fee",
+    "procedure": "process"
 }
 
 PLURAL_REPLACEMENTS = {
@@ -63,7 +74,11 @@ PLURAL_REPLACEMENTS = {
     "departments": "department",
     "fees": "fee",
     "courses": "course",
-    "requirements": "requirement"
+    "requirements": "requirement",
+    "projects": "project",
+    "contacts": "contact",
+    "exams": "exam",
+    "subjects": "subject"
 }
 
 def normalize_input(text):
