@@ -11,6 +11,10 @@ from textblob import TextBlob
 from symspellpy import SymSpell
 from pathlib import Path
 import re
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Set OpenAI API Key
 openai.api_key = os.getenv("OPENAI_API_KEY")
