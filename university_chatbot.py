@@ -10,6 +10,7 @@ import openai
 from textblob import TextBlob
 from symspellpy import SymSpell
 from pathlib import Path
+import re
 
 # Set OpenAI API Key
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -34,6 +35,50 @@ sym_spell = SymSpell(max_dictionary_edit_distance=2, prefix_length=7)
 dictionary_path = Path("frequency_dictionary_en_82_765.txt")
 sym_spell.load_dictionary(dictionary_path, 0, 1)
 
+# Abbreviations, Synonyms, Plurals
+ABBREVIATIONS = {
+    "siwes": "student industrial work experience scheme",
+    "dept": "department",
+    "dept.": "department",
+    "cuab": "crescent university",
+    "coe": "college of education",
+    "cs": "computer science",
+    "ict": "information and communication technology"
+}
+
+SYNONYMS = {
+    "school fees": "tuition",
+    "accommodation": "hostel",
+    "hostel fee": "accommodation fee",
+    "registration": "enrollment",
+    "courses": "subjects",
+    "lecturers": "academic staff",
+    "teachers": "lecturers",
+    "head of department": "hod"
+}
+
+PLURAL_REPLACEMENTS = {
+    "students": "student",
+    "lectures": "lecture",
+    "departments": "department",
+    "fees": "fee",
+    "courses": "course",
+    "requirements": "requirement"
+}
+
+def normalize_input(text):
+    text = text.lower()
+    # Abbreviation expansion
+    for abbr, full in ABBREVIATIONS.items():
+        text = re.sub(rf"\\b{re.escape(abbr)}\\b", full, text)
+    # Synonym replacement
+    for syn, base in SYNONYMS.items():
+        text = re.sub(rf"\\b{re.escape(syn)}\\b", base, text)
+    # Plural to singular
+    for plural, singular in PLURAL_REPLACEMENTS.items():
+        text = re.sub(rf"\\b{plural}\\b", singular, text)
+    return text
+
 def correct_spelling(text):
     suggestions = sym_spell.lookup_compound(text, max_edit_distance=2)
     return suggestions[0].term if suggestions else text
@@ -47,7 +92,7 @@ def detect_sentiment(text):
     return "neutral"
 
 def search_answer(user_input):
-    query = correct_spelling(user_input.lower())
+    query = normalize_input(correct_spelling(user_input))
     query_embedding = embed_model.encode([query], convert_to_tensor=True).cpu().numpy()
     D, I = index.search(query_embedding, k=1)
     top_score = D[0][0]
