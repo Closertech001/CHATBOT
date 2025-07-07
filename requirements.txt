@@ -7,3 +7,4 @@ symspellpy==6.7.7
 numpy==1.26.4
 torch==2.2.2
 scipy==1.13.1
+python-dotenv==1.0.1
