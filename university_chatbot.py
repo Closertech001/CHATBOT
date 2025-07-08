@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize OpenAI client
-client = OpenAI()
+client = OpenAI(api_key=os.getenv(\"OPENAI_API_KEY\"))
 
 # Load SentenceTransformer model
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
