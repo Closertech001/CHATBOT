@@ -6,7 +6,7 @@ import json
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer, util
-from openai import OpenAI
+import openai
 from textblob import TextBlob
 from symspellpy import SymSpell
 from pathlib import Path
@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Set OpenAI API Key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Load SentenceTransformer model
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -124,7 +124,7 @@ You are CrescentBot, a friendly and helpful assistant for a university. Be conve
 User: {user_input}
 Assistant:
 """
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a helpful university assistant."},
@@ -132,7 +132,7 @@ Assistant:
         ],
         max_tokens=300
     )
-    return response.choices[0].message.content.strip()
+    return response.choices[0].message["content"].strip()
 
 # Streamlit UI
 st.set_page_config(page_title="🎓 CrescentBot - University Assistant", layout="wide")
