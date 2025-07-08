@@ -6,7 +6,7 @@ import json
 import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer, util
-from openai import OpenAI
+import openai
 from textblob import TextBlob
 from symspellpy import SymSpell
 from pathlib import Path
@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client with API key
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Set OpenAI API Key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Load SentenceTransformer model
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -89,13 +89,13 @@ def normalize_input(text):
     text = text.lower()
     # Abbreviation expansion
     for abbr, full in ABBREVIATIONS.items():
-        text = re.sub(rf"\\b{re.escape(abbr)}\\b", full, text)
+        text = re.sub(rf"\b{re.escape(abbr)}\b", full, text)
     # Synonym replacement
     for syn, base in SYNONYMS.items():
-        text = re.sub(rf"\\b{re.escape(syn)}\\b", base, text)
+        text = re.sub(rf"\b{re.escape(syn)}\b", base, text)
     # Plural to singular
     for plural, singular in PLURAL_REPLACEMENTS.items():
-        text = re.sub(rf"\\b{plural}\\b", singular, text)
+        text = re.sub(rf"\b{plural}\b", singular, text)
     return text
 
 def correct_spelling(text):
@@ -124,7 +124,7 @@ You are CrescentBot, a friendly and helpful assistant for a university. Be conve
 User: {user_input}
 Assistant:
 """
-    response = client.chat.completions.create(
+    response = openai.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a helpful university assistant."},
