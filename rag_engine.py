@@ -2,7 +2,6 @@ import faiss
 import os
 import openai
 import tiktoken
-from openai.embeddings_utils import get_embedding
 from dotenv import load_dotenv
 from utils.chunker import load_json_chunks
 
@@ -11,6 +10,13 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def get_chunks():
     return load_json_chunks("data/university_data.json")
+
+def get_embedding(text, model="text-embedding-3-small"):
+    from openai import OpenAI
+    client = OpenAI()  # Uses your OPENAI_API_KEY from .env
+    text = text.replace("\n", " ")  # clean up newlines
+    response = client.embeddings.create(input=[text], model=model)
+    return response.data[0].embedding
 
 def build_or_load_faiss_index(chunks, dim=1536):
     index_file = "faiss_index/index.faiss"
