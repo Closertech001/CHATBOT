@@ -11,10 +11,18 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Embedding function
 def get_embedding(text, model="text-embedding-3-small"):
     from openai import OpenAI
-    client = OpenAI()  # Automatically picks up API key from env
-    text = text.replace("\n", " ")  # Clean newlines
-    response = client.embeddings.create(input=[text], model=model)
-    return response.data[0].embedding
+    import os
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    text = text.replace("\n", " ").strip()
+    
+    try:
+        response = client.embeddings.create(input=[text], model=model)
+        return response.data[0].embedding
+    except Exception as e:
+        print(f"[ERROR] Embedding failed: {e}")
+        return [0.0] * 1536  # fallback vector if embedding fails
+
 
 # Load and chunk the JSON data
 def get_chunks():
